@@ -12,8 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -123,8 +121,8 @@ public class Sudoku extends JFrame implements ActionListener {
                     }
                 }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(Sudoku.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
+            System.err.println(e);
         }
     }
     
