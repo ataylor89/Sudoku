@@ -227,7 +227,7 @@ public class Sudoku extends JFrame implements ActionListener {
         if (e.getSource() == openFile) {
             open();
         }
-        if (e.getSource() == saveFile) {
+        else if (e.getSource() == saveFile) {
             save();
         }
         else if (e.getSource() == saveFileAs) {
