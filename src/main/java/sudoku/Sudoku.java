@@ -5,6 +5,12 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,10 +35,12 @@ public class Sudoku extends JFrame implements ActionListener {
     
     private JMenuBar menuBar;
     private JMenu fileMenu;
-    private JMenuItem openFile, saveFile, saveFileAs, validate, exit;
+    private JMenuItem newFile, openFile, saveFile, saveFileAs, validate, exit;
     private JPanel contentPane;
     private JPanel[][] panels;
     private JTextField[][] squares;
+    private MouseListener mouseListener;
+    private KeyListener keyListener;
     private File file;
     private JFileChooser fileChooser;
     
@@ -45,16 +53,19 @@ public class Sudoku extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
+        newFile = new JMenuItem("New");
         openFile = new JMenuItem("Open");
         saveFile = new JMenuItem("Save");
         saveFileAs = new JMenuItem("Save as");
         validate = new JMenuItem("Validate");
         exit = new JMenuItem("Exit");
+        newFile.addActionListener(this);
         openFile.addActionListener(this);
         saveFile.addActionListener(this);
         saveFileAs.addActionListener(this);
         validate.addActionListener(this);
         exit.addActionListener(this);
+        fileMenu.add(newFile);
         fileMenu.add(openFile);
         fileMenu.add(saveFile);
         fileMenu.add(saveFileAs);
@@ -93,6 +104,53 @@ public class Sudoku extends JFrame implements ActionListener {
         }
         setContentPane(contentPane);
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
+        setupMouseAndKeyListeners();
+    }
+    
+    public void setupMouseAndKeyListeners() {
+        mouseListener = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getSource() instanceof JTextField square) {
+                    if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+                        if (!square.isEditable()) {
+                            square.setForeground(Color.BLACK);
+                            square.setEditable(true);
+                        }
+                    }
+                }
+            }
+        };
+        keyListener = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getSource() instanceof JTextField square) {
+                    if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                        if (square.isEditable()) {
+                            square.setForeground(new Color(0x800000));
+                            square.setEditable(false);
+                        }
+                    }
+                } 
+            }
+        };
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                squares[i][j].addMouseListener(mouseListener);
+                squares[i][j].addKeyListener(keyListener);
+            }
+        }
+    }
+    
+    public void clear() {
+        this.file = null;
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                squares[i][j].setText("");
+                squares[i][j].setForeground(Color.BLACK);
+                squares[i][j].setEditable(true);
+            }
+        }
     }
     
     public void open(File file) {
@@ -224,7 +282,10 @@ public class Sudoku extends JFrame implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == openFile) {
+        if (e.getSource() == newFile) {
+            clear();
+        }
+        else if (e.getSource() == openFile) {
             open();
         }
         else if (e.getSource() == saveFile) {
@@ -241,11 +302,10 @@ public class Sudoku extends JFrame implements ActionListener {
             System.exit(0);
         }
     }
-    
+        
     public static void main(String[] args) {
         Sudoku sudoku = new Sudoku();
         sudoku.createAndShowGui();
-        sudoku.open(new File("src/main/resources/puzzle1.txt"));
         sudoku.setVisible(true);
     }
 }
