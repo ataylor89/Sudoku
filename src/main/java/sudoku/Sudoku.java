@@ -82,12 +82,15 @@ public class Sudoku extends JFrame implements ActionListener {
                 contentPane.add(panels[i][j]);
             }
         }
+        setupMouseAndKeyListeners();
         squares = new JTextField[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 squares[i][j] = new JTextField();
                 squares[i][j].setHorizontalAlignment(JTextField.CENTER);
                 squares[i][j].setFont(new Font("Sans Serif", Font.PLAIN, 30));
+                squares[i][j].addMouseListener(mouseListener);
+                squares[i][j].addKeyListener(keyListener);
                 squares[i][j].setDocument(new PlainDocument() {
                     @Override
                     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
@@ -104,7 +107,6 @@ public class Sudoku extends JFrame implements ActionListener {
         }
         setContentPane(contentPane);
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
-        setupMouseAndKeyListeners();
     }
     
     public void setupMouseAndKeyListeners() {
@@ -134,12 +136,6 @@ public class Sudoku extends JFrame implements ActionListener {
                 } 
             }
         };
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                squares[i][j].addMouseListener(mouseListener);
-                squares[i][j].addKeyListener(keyListener);
-            }
-        }
     }
     
     public void clear() {
