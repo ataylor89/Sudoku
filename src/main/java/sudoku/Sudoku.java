@@ -107,6 +107,7 @@ public class Sudoku extends JFrame implements ActionListener {
         }
         setContentPane(contentPane);
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
+        setVisible(true);
     }
     
     public void setupMouseAndKeyListeners() {
@@ -302,6 +303,5 @@ public class Sudoku extends JFrame implements ActionListener {
     public static void main(String[] args) {
         Sudoku sudoku = new Sudoku();
         sudoku.createAndShowGui();
-        sudoku.setVisible(true);
     }
 }
